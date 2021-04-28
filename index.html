@@ -1,14 +1,183 @@
 <html>
-  
-  
-  <head>
+
+
+<head>
+    <title>Bouncy Ball</title>
+    <style>
     
-  </head>
-  
-  <body>
-    <h1> Website Created </h1>
+        svg{
+            overflow: visible;
+            margin-bottom: 50px;
+        }
+        
+        body{
+            margin: 20px 40px;
+        }
+        
+        table, th, td{
+            border: 1px solid black;
+        }
+        
+        table, th{
+            padding :10px;
+            text-align: center;
+        }
+    
+    </style>
+    </head>
+
+<body>
+    <script src = "https://d3js.org/d3.v5.min.js"></script>
+    <svg>
+    </svg>
+    <table>
+    <tbody>
+    <thead>
+    <tr>
+        <th>Id</th>
+        <th>Date</th>
+        <th>Distance</th>
+        </tr>
+        </thead>
+    </tbody>
+        </table>
+    <script>
+    var WIDTH = 800;
+    var HEIGHT = 600;
+        
+    var svg = d3.select("svg")
+    
+        svg.attr("width",WIDTH)
+        .attr("height", HEIGHT);
+        
+    let runs = [
+        {id:1,
+        date: 'October 1, 2017 at 4:00PM',
+        distance :5.2
+        },
+        {id:3,
+        date: 'October 3, 2017 at 6:00PM',
+        distance :8.7
+        }
+    ];
+    
+        
+    
+    var yScale = d3.scaleLinear();
+        
+    
+        
+    var yDomain = d3.extent(runs, function(d, i){
+        return d.distance;
+    })
+    
+    yScale.domain(yDomain);
+    yScale.range([HEIGHT,0])
     
     
-  </body>
-  
+    
+    
+    var xScale = d3.scaleTime();
+    xScale.range([0,WIDTH]);
+    
+    
+    
+    var parseTime = d3.timeParse("%B%e, %Y at %-I:%M%p");
+        
+    var formatTime = d3.timeFormat("%B%e, %Y at %-I:%M%p");
+        
+    var xDomain = d3.extent(runs, function(d, i){
+        return parseTime(d.date)
+    })
+    
+    xScale.domain(xDomain);
+        
+    
+     
+        
+    var bottomaxis = d3.axisBottom(xScale);
+        
+    d3.select("svg").append("g").call(bottomaxis).attr("transform","translate(0,"+HEIGHT+")");
+        
+    var leftaxis = d3.axisLeft(yScale);
+        
+    d3.select("svg").append("g").call(leftaxis)//.attr("transform","translate("+WIDTH+")");
+    
+    let createTable = function(){
+        for(let i=0; i<runs.length;i++){
+            var row = d3.select("tbody").append("tr");
+            row.append("td").html(runs[i].id);
+            row.append("td").html(runs[i].date);
+            row.append("td").html(runs[i].distance);
+            
+        }
+    } 
+    var drag = function(d){
+        var x = d3.event.x;
+        var y = d3.event.y;
+        
+        d3.select(this).attr('cx',x)
+        d3.select(this).attr('cy',y)
+        
+        
+    }
+    
+     var dragBehaviour = d3.drag()
+    .on("drag", drag)
+    var render = function(){
+        d3.select("svg").append("line")
+        .attr("x1",)
+        d3.select("svg").selectAll("circle").data(runs).enter().append("circle").attr("r",5).attr("cy",function(d, i){
+        return yScale(d.distance);
+        })
+        .attr("cx",function(d, i){
+        return xScale(parseTime(d.date))
+        })
+        .style("fill", function(d, i){
+            let color;
+            if (d.distance>=7){
+                color = "blue";
+            }else{
+                color = "green";
+            }
+            return color;
+        })
+        .style("stroke","black")
+        .style("stroke-width","1.8");
+        
+        d3.selectAll("circle").call(dragBehaviour);
+    }
+    
+    render();
+    createTable();
+        
+    
+    
+   
+    
+    
+        
+    d3.select("svg").on("click", function(){
+            var x = d3.event.offsetX;
+            var y = d3.event.offsetY;
+            
+            var date = xScale.invert(x);
+            
+            var distance = yScale.invert(y)
+            
+            var newRun = {
+                id : runs[runs.length-1].id+1,
+                
+                date : formatTime(date),
+                
+                distance : distance
+            }
+            runs.push(newRun);
+            createTable();
+            render();
+        })
+    
+    </script>
+        
+    </body>
 </html>
