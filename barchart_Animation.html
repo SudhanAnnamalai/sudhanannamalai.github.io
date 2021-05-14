@@ -1,0 +1,183 @@
+<html>
+
+
+<head>
+    <title>Bouncy Ball</title>
+    <style>
+    
+        svg{
+            overflow: visible;
+            margin-bottom: 50px;
+        }
+        
+        body{
+            margin: 20px 40px;
+        }
+        
+        table, th, td{
+            border: 1px solid black;
+        }
+        
+        table, th{
+            padding :10px;
+            text-align: center;
+        }
+    
+    </style>
+    </head>
+
+<body>
+    <script src = "d3/d3.min.js"></script>
+    
+    <svg>
+    </svg>
+    <button onclick=normal()> Normal</button>
+    <button onclick=family()> Family</button>
+    <script>
+    
+    var margin = {
+    top : 60,
+    right :10,
+    bottom :50,
+    left :50
+};
+        
+    let width = 800;
+    let height = 400;
+        
+    let svg = d3.select("svg")
+    .attr("width", width+margin.right+margin.left)
+    .attr("height", height+margin.top+margin.bottom);
+        
+    var g= svg.append("g")
+    .attr("transform", "translate("+margin.left+","+margin.top+")");
+        
+    var x = d3.scaleBand()
+    .rangeRound([0,width]).padding(0.1);
+    var y = d3.scaleLinear()
+    .rangeRound([height,0]);
+        
+    xAxis = svg.append("g")
+        .attr("class","axis axis--x")
+        .attr("transform", "translate(0," + height + ")")
+        
+    yAxis = svg.append("g")
+        .attr("class","axis axis--y")
+        
+    
+        
+     var data0 = [
+        { gpa: "Abster", height: 138 },
+        { gpa: "Femster", height: 153 },
+         { gpa: "Gujarati", height: 148 },
+        { gpa: "Solity", height: 164 },
+        { gpa: "Manga", height: 162 },
+        { gpa: "Thenga", height: 143 },
+         { gpa: "Foolati", height: 148 },
+        { gpa: "molati", height: 164 },
+        { gpa: "gULATI", height: 162 },
+        { gpa: "MAYIRE", height: 143 },
+         { gpa: "POOJAKU", height: 148 },
+        { gpa: "Molakai", height: 164 },
+        { gpa: "Papunt", height: 162 },
+        { gpa: "Kothainaked", height: 143 },
+         { gpa: "Kunjaern", height: 148 },
+        { gpa: "Poalean", height: 164 },
+        { gpa: "Sidhikk", height: 162 },
+        { gpa: "Deoal", height: 143 }
+         
+    
+]
+     
+      var data1 = [
+        { gpa: "Annamalai", height: 158 },
+        { gpa: "Sivagami", height: 145 },
+        { gpa: "Karthi", height: 189 },
+        { gpa: "Sudharsan", height: 191 }
+      ]
+      
+      //var flag = true;
+     //d3.interval(function(){
+    //data = flag ? data0 :data1;
+    
+    //update(data)
+  
+  //flag = !flag;
+//}, 2000)
+        
+    update(data0);
+      
+     function update(data){
+         if (data==data0){
+    color = "red";
+   
+}
+    else{
+        color  = "blue";
+    }
+         var t = d3.transition().duration(1000);
+         var f = d3.transition().duration(500);
+         x.domain(data.map( (d)=> {return d.gpa;}));
+         
+         y.domain([0, d3.max(data, function(d) { return d.height; })])
+         
+         
+         
+         
+         
+         
+        yAxis.transition(t)
+        .call(d3.axisLeft(y).ticks(5))
+         
+         xAxis.transition(t)
+        .call(d3.axisBottom(x));
+         
+        let bars = svg.selectAll(".bar")
+    .data(data);
+         
+         bars.exit().transition(f)
+         .attr("y",height)
+         .attr("height",0)
+         .remove()
+         
+        bars.transition(t)
+         .attr("x", (d) => {return x(d.gpa);})
+         .style("fill",color)
+         .attr("width", x.bandwidth())
+    
+        
+        
+    bars.enter().append("rect")
+        .attr("class","bar")
+        .attr("x", (d) => {return x(d.gpa);})
+        
+        .attr("width", x.bandwidth())
+        .attr("y",height)
+        .attr("height", 0)
+        .transition(t)
+        .attr("y", (d) => { return y(d.height);})
+        .attr("height", (d) => {return height - y(d.height)})
+        .style("fill", color)
+        .style("stroke-width",2)
+        .style("stroke","black")
+         
+     }
+      
+    
+     function normal(){
+         update(data0);
+        
+     }
+        function family(){
+            update(data1);
+        }
+    
+        
+    
+        
+    
+    
+    </script>
+        
+    </body>
+</html>
