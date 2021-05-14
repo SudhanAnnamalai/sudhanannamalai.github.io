@@ -27,12 +27,13 @@
     </head>
 
 <body>
-    <script src="https://d3js.org/d3.v4.min.js"></script>
+   <script src="https://d3js.org/d3.v4.min.js"></script>
     
     <svg>
     </svg>
     <button onclick=normal()> Normal</button>
     <button onclick=family()> Family</button>
+    <button onclick=third()> Third</button>
     <script>
     
     var margin = {
@@ -42,8 +43,8 @@
     left :50
 };
         
-    let width = 800;
-    let height = 400;
+    let width = 2000;
+    let height = 500;
         
     let svg = d3.select("svg")
     .attr("width", width+margin.right+margin.left)
@@ -92,8 +93,19 @@
       var data1 = [
         { gpa: "Annamalai", height: 158 },
         { gpa: "Sivagami", height: 145 },
-        { gpa: "Karthi", height: 189 },
-        { gpa: "Sudharsan", height: 191 }
+        { gpa: "Sudharsan", height: 189 },
+        { gpa: "Karthi", height: 191 }
+        
+        
+      ]
+      
+       var data2 = [
+        { gpa: "Shivam", height: 178 },
+        { gpa: "Parvathi", height: 165 },
+        { gpa: "Vinayagar", height: 199 },
+        { gpa: "Murugar", height: 200 },
+           { gpa: "Valli", height: 158 },
+        { gpa: "Dheivanai", height: 145 }
       ]
       
       //var flag = true;
@@ -111,6 +123,8 @@
          if (data==data0){
     color = "red";
    
+} else if (data == data2){
+    color = "lightblue"
 }
     else{
         color  = "blue";
@@ -140,7 +154,7 @@
          .attr("height",0)
          .remove()
          
-        bars.transition(t)
+        bars.transition(f)
          .attr("x", (d) => {return x(d.gpa);})
          .style("fill",color)
          .attr("width", x.bandwidth())
@@ -171,7 +185,10 @@
         function family(){
             update(data1);
         }
-    
+        
+        function third(){
+            update(data2);
+        }
         
     
         
